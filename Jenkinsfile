@@ -1,7 +1,7 @@
 pipeline{
     agent any
     environment {
-        MYSQL_DATABASE_HOST = "database-42.cbanmzptkrzf.us-east-1.rds.amazonaws.com"
+      MYSQL_DATABASE_HOST = "database-42.cbanmzptkrzf.us-east-1.rds.amazonaws.com"
         MYSQL_DATABASE_PASSWORD = "Clarusway"
         MYSQL_DATABASE_USER = "admin"
         MYSQL_DATABASE_DB = "phonebook"
@@ -22,8 +22,7 @@ pipeline{
                 }   
             }
         }
-    }
-	stage('test') {
+		stage('test') {
     agent {
         docker {
             image 'python:alpine'
@@ -40,4 +39,6 @@ pipeline{
         }
     }
 }
+    }
+	
 }
