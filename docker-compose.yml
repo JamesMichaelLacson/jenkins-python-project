@@ -13,7 +13,7 @@ services:
         networks:
             - clarusnet
     app:
-        image: 046402772087.dkr.ecr.us-east-1.amazonaws.com/matt/handson-jenkins:latest
+        image: 612215931034.dkr.ecr.us-east-1.amazonaws.com/jenkins-lab/nov4:latest
         restart: always
         environment:
             MYSQL_DATABASE_HOST: database
