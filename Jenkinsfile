@@ -39,6 +39,14 @@ pipeline{
         }
     }
 }
+
+stage('build'){
+            agent any
+            steps{
+                sh "docker build -t jenkins-lab/nov4 ."
+                sh "docker tag jenkins-lab/nov4:latest 612215931034.dkr.ecr.us-east-1.amazonaws.com/jenkins-lab/nov4:latest"
+            }
+        }
     }
 	
 }
