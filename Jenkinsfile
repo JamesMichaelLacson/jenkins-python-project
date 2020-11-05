@@ -56,6 +56,14 @@ stage('build'){
         sh "docker push 612215931034.dkr.ecr.us-east-1.amazonaws.com/jenkins-lab/nov4:latest"
     }
 }
+
+stage('compose'){
+    agent any
+    steps{
+        sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 612215931034.dkr.ecr.us-east-1.amazonaws.com"
+        sh "docker-compose up -d"
+    }
+}
     }
 	
 }
