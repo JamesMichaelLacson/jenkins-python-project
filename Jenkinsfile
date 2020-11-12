@@ -64,17 +64,50 @@ pipeline{
             agent any
             steps{
                 sh '''
-                    if [ -f "cloud.pem" ]
+                    if [ -f "cloud2.pem" ]
                     then
                         echo "file exists..."
                     else
                         aws ec2 create-key-pair \
                           --region us-east-1 \
-                          --key-name cloud.pem \
+                          --key-name cloud2.pem \
                           --query KeyMaterial \
-                          --output text > cloud.pem
-                        chmod 400 cloud.pem
-                        ssh-keygen -y -f cloud.pem >> mattsJenkinsKey3_public.pem
+                          --output text > cloud2.pem
+                        chmod 400 cloud2.pem
+                        ssh-keygen -y -f cloud2.pem >> cloudpublic.pem
+                    fi
+                '''
+            }
+        }
+		stage('create-cluster'){
+            agent any
+            steps{
+                sh '''
+                    #!/bin/sh
+                    running=$(sudo lsof -i:80) || true
+                    if [ "$running" != '' ]
+                    then
+                        docker-compose down
+                        exist="$(aws eks list-clusters | grep jimmy-cluster2)" || true
+                        if [ "$exist" == '' ]
+                        then
+                            eksctl create cluster \
+                                --name jimmy-cluster2 \
+                                --version 1.18 \
+                                --region us-east-1 \
+                                --nodegroup-name my-nodes \
+                                --node-type t2.small \
+                                --nodes 1 \
+                                --nodes-min 1 \
+                                --nodes-max 2 \
+                                --ssh-access \
+                                --ssh-public-key  cloudpublic.pem \
+                                --managed
+                        else
+                            echo 'no need to create cluster...'
+                        fi
+                    else
+                        echo 'app is not running with docker-compose up -d'
                     fi
                 '''
             }
