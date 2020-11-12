@@ -60,5 +60,24 @@ pipeline{
                 sh "docker-compose up -d"
             }
         }
+		stage('get-keypair'){
+            agent any
+            steps{
+                sh '''
+                    if [ -f "cloud.pem" ]
+                    then
+                        echo "file exists..."
+                    else
+                        aws ec2 create-key-pair \
+                          --region us-east-1 \
+                          --key-name cloud.pem \
+                          --query KeyMaterial \
+                          --output text > cloud.pem
+                        chmod 400 cloud.pem
+                        ssh-keygen -y -f cloud.pem >> mattsJenkinsKey3_public.pem
+                    fi
+                '''
+            }
+        }
     }
 }
